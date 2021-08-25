@@ -191,7 +191,6 @@ class ThreeDragControls extends EventDispatcher {
           }
         
           function onPointerCancel(event) {
-            console.log('cancel pointer count: ', _pointerCount);
             _pointerCount--;
             if (_pointerCount < 0)
                 _pointerCount = 0;
@@ -199,14 +198,12 @@ class ThreeDragControls extends EventDispatcher {
             if ( scope.enabled === false ) return;
         
             if ( _selected && event.pointerId == _dragPointerId) {
-              console.log("dragend!:",_dragPointerId, _selected, event.pointerId);
               scope.dispatchEvent( { type: 'dragend', object: _selected } );
               _selected = null;
               _isDragging = false;
         
             }
             if (_pointerCount == 0) {
-                console.log("double dragon");
                 _isPointerDown = false;
                 _dragPointerId = -1;
                 _domElement.style.cursor = _hovered ? 'pointer' : 'auto';
