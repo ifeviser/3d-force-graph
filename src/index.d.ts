@@ -1,4 +1,4 @@
-import { Scene, Camera, WebGLRenderer, WebGLRendererParameters, Renderer } from 'three';
+import { Object3D, Scene, Camera, WebGLRenderer, WebGLRendererParameters, Renderer } from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { ThreeForceGraphGeneric } from 'three-forcegraph';
 
@@ -50,6 +50,8 @@ export interface ForceGraph3DGenericInstance<ChainableInstance>
   onBackgroundRightClick(callback: (event: MouseEvent) => void): ChainableInstance;
   linkHoverPrecision(): number;
   linkHoverPrecision(precision: number): ChainableInstance;
+  hoverFilter(): (obj: Object3D) => boolean;
+  hoverFilter(filterFn: (obj: Object3D) => boolean): ChainableInstance;
   enablePointerInteraction(): boolean;
   enablePointerInteraction(enable: boolean): ChainableInstance;
   enableNodeDrag(): boolean;

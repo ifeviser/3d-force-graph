@@ -1,6 +1,7 @@
 {
-  "name": "3d-force-graph",
-  "version": "1.70.5",
+  "name": "@ifeviser/3d-force-graph",
+  "unscopedName": "3d-force-graph",
+  "version": "1.70.5-rc.1",
   "description": "UI component for a 3D force-directed graph using ThreeJS and d3-force-3d layout engine",
   "unpkg": "dist/3d-force-graph.min.js",
   "main": "dist/3d-force-graph.common.js",
@@ -8,7 +9,10 @@
   "types": "dist/3d-force-graph.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vasturiano/3d-force-graph.git"
+    "url": "https://github.com/ifeviser/3d-force-graph.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "homepage": "https://github.com/vasturiano/3d-force-graph",
   "keywords": [
@@ -39,9 +43,9 @@
   "dependencies": {
     "accessor-fn": "1",
     "kapsule": "^1.13",
-    "three": ">=0.118 <1",
+    "three": "^0.131.3",
     "three-forcegraph": "^1.39",
-    "three-render-objects": "^1.26"
+    "@ifeviser/three-render-objects": "^1.26.4-rc.1"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

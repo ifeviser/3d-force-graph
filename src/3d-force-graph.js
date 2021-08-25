@@ -4,10 +4,12 @@ const three = window.THREE
   ? window.THREE // Prefer consumption from global THREE, if exists
   : { AmbientLight, DirectionalLight, Vector3 };
 
-import { DragControls as ThreeDragControls } from 'three/examples/jsm/controls/DragControls.js';
+//import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
+import {ThreeDragControls} from './ThreeDragControls';
 
-import ThreeForceGraph from 'three-forcegraph';
-import ThreeRenderObjects from 'three-render-objects';
+//import ThreeForceGraph from 'three-forcegraph';
+import ThreeForceGraph from './ThreeForceGraph';
+import ThreeRenderObjects from '@ifeviser/three-render-objects';
 
 import accessorFn from 'accessor-fn';
 import Kapsule from 'kapsule';
@@ -17,7 +19,6 @@ import linkKapsule from './kapsule-link.js';
 //
 
 const CAMERA_DISTANCE2NODES_FACTOR = 170;
-
 //
 
 // Expose config from forceGraph
@@ -89,12 +90,13 @@ const linkedRenderObjsProps = Object.assign(...[
   'height',
   'backgroundColor',
   'showNavInfo',
-  'enablePointerInteraction'
+  'enablePointerInteraction',
+  'hoverFilter'
 ].map(p => ({ [p]: bindRenderObjs.linkProp(p)})));
 const linkedRenderObjsMethods = Object.assign(
   ...[
     'cameraPosition',
-    'postProcessingComposer'
+    'postProcessingComposer',
   ].map(p => ({ [p]: bindRenderObjs.linkMethod(p)})),
   {
     graph2ScreenCoords: bindRenderObjs.linkMethod('getScreenCoords'),
@@ -216,6 +218,9 @@ export default Kapsule({
       .onLoading(() => { infoElem.textContent = 'Loading...' })
       .onFinishLoading(() => { infoElem.textContent = '' })
       .onUpdate(() => {
+        if (state._dragControls)
+          state._dragControls.enabled = false;
+        controls.enabled = false;
         // sync graph data structures
         state.graphData = state.forceGraph.graphData();
 
@@ -226,6 +231,7 @@ export default Kapsule({
         }
       })
       .onFinishUpdate(() => {
+        controls.enabled = true;
         // Setup node drag interaction
         if (state._dragControls) {
           const curNodeDrag = state.graphData.nodes.find(node => node.__initialFixedPos && !node.__disposeControlsAfterDrag); // detect if there's a node being dragged using the existing drag controls
@@ -244,7 +250,7 @@ export default Kapsule({
             camera,
             renderer.domElement
           );
-
+          
           dragControls.addEventListener('dragstart', function (event) {
             controls.enabled = false; // Disable controls while dragging
 
@@ -265,13 +271,11 @@ export default Kapsule({
 
           dragControls.addEventListener('drag', function (event) {
             const nodeObj = getGraphObj(event.object);
-
             if (!event.object.hasOwnProperty('__graphObjType')) {
               // If dragging a child of the node, update the node object instead
               const initPos = event.object.__initialPos;
               const prevPos = event.object.__prevPos;
               const newPos = event.object.position;
-
               nodeObj.position.add(newPos.clone().sub(prevPos)); // translate node object by the motion delta
               prevPos.copy(newPos);
               newPos.copy(initPos); // reset child back to its initial position
